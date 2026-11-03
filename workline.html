@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>워크라인 연동 설치</title>
+<style>
+:root{--red:#E1362B;--ink:#1d2433;--ink2:#4a5568;--ink3:#8a94a6;--line:#e3e7ee;--bg:#f6f7f9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 Pretendard,-apple-system,"Malgun Gothic",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--ink2);margin:0 0 28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 10px}
+ol{margin:0;padding-left:20px}
+li{margin:6px 0}
+kbd{font:12px ui-monospace,monospace;background:#f1f3f5;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px}
+.bm{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:700;text-decoration:none;padding:10px 18px;border-radius:8px;cursor:grab;margin:10px 0 4px}
+.bm:active{cursor:grabbing}
+.hint{color:var(--ink3);font-size:12px}
+button.copy{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer}
+ul.notes{margin:0;padding-left:18px;color:var(--ink2)}
+a{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>워크라인 연동 설치</h1>
+  <p class="sub">워크라인에서 엑셀을 내려받지 않고 전체정산관리 데이터를 <a href="./">KT 정산검수툴</a>로 바로 보내는 북마크 버튼입니다.</p>
+
+  <div class="card">
+    <h2>1. 설치 (한 번만)</h2>
+    <ol>
+      <li>북마크바가 안 보이면 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> (Mac은 <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>)로 켭니다.</li>
+      <li>아래 빨간 버튼을 마우스로 끌어서 북마크바에 놓습니다. (클릭하지 말고 드래그)<br>
+        <a class="bm" id="bm" href="javascript:(()%3D%3E%7Bconst%20t%3D%22https%3A%2F%2Fwoori-001.github.io%22%3Bif(%22workline.kr%22!%3D%3Dlocation.hostname)return%20void%20alert(%22%EC%9B%8C%ED%81%AC%EB%9D%BC%EC%9D%B8(workline.kr)%EC%97%90%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%ED%95%9C%20%ED%99%94%EB%A9%B4%EC%97%90%EC%84%9C%20%EB%88%8C%EB%9F%AC%EC%A3%BC%EC%84%B8%EC%9A%94.%22)%3Bif(document.getElementById(%22kta-ov%22))return%3Bconst%20e%3Dt%3D%3EString(t).padStart(2%2C%220%22)%2Co%3Dt%3D%3Et.getFullYear()%2B%22-%22%2Be(t.getMonth()%2B1)%2B%22-%22%2Be(t.getDate())%2Ca%3Dnew%20Date%3Ba.setHours(0%2C0%2C0%2C0)%3Bconst%20i%3D(a.getDay()%2B6)%257%2Cr%3Dnew%20Date(a)%3Br.setDate(a.getDate()-i-7)%3Bconst%20n%3Dnew%20Date(r)%3Bn.setDate(r.getDate()%2B6)%3Bconst%20s%3Ddocument.createElement(%22div%22)%3Bs.id%3D%22kta-ov%22%2Cs.setAttribute(%22style%22%2C&#x27;position%3Afixed%3Btop%3A72px%3Bright%3A24px%3Bz-index%3A2147483647%3Bwidth%3A330px%3Bbackground%3A%23fff%3Bborder%3A1px%20solid%20%23d0d5dd%3Bborder-radius%3A12px%3Bbox-shadow%3A0%2012px%2032px%20rgba(0%2C0%2C0%2C.18)%3Bfont%3A13px%2F1.5%20-apple-system%2C%22Malgun%20Gothic%22%2Csans-serif%3Bcolor%3A%231d2433%3Bpadding%3A16px&#x27;)%3Bconst%20d%3D%22width%3A100%25%3Bbox-sizing%3Aborder-box%3Bheight%3A32px%3Bborder%3A1px%20solid%20%23d0d5dd%3Bborder-radius%3A6px%3Bpadding%3A0%208px%3Bfont-size%3A13px%3Bmargin-top%3A4px%22%3Bs.innerHTML%3D&#x27;%3Cdiv%20style%3D%22display%3Aflex%3Balign-items%3Acenter%3Bmargin-bottom%3A12px%22%3E%3Cb%20style%3D%22font-size%3A14px%3Bcolor%3A%23E1362B%22%3EKT%20%EC%A0%95%EC%82%B0%EA%B2%80%EC%88%98%ED%88%B4%EB%A1%9C%20%EB%B3%B4%EB%82%B4%EA%B8%B0%3C%2Fb%3E%3Cbutton%20id%3D%22kta-x%22%20style%3D%22margin-left%3Aauto%3Bborder%3A0%3Bbackground%3Anone%3Bfont-size%3A18px%3Bcursor%3Apointer%3Bcolor%3A%23888%22%3E%C3%97%3C%2Fbutton%3E%3C%2Fdiv%3E%3Clabel%20style%3D%22display%3Ablock%3Bmargin-bottom%3A8px%22%3E%EC%A1%B0%ED%9A%8C%20%EA%B8%B0%EC%A4%80%3Cselect%20id%3D%22kta-dc%22%20style%3D%22&#x27;%2Bd%2B&#x27;%22%3E%3Coption%20value%3D%222%22%3E%EA%B0%9C%ED%86%B5%EC%9D%BC%3C%2Foption%3E%3Coption%20value%3D%221%22%3E%EC%A0%91%EC%88%98%EC%9D%BC%3C%2Foption%3E%3Coption%20value%3D%224%22%3E%EC%A0%95%EC%82%B0%EC%98%88%EC%A0%95%3C%2Foption%3E%3Coption%20value%3D%225%22%3E%EC%A0%95%EC%82%B0%EC%99%84%EB%A3%8C%3C%2Foption%3E%3Coption%20value%3D%226%22%3E%EC%A0%95%EC%82%B0%EC%98%88%EC%A0%95(%EB%AF%B8%EC%99%84%EB%A3%8C)%3C%2Foption%3E%3C%2Fselect%3E%3C%2Flabel%3E%3Cdiv%20style%3D%22display%3Aflex%3Bgap%3A6px%3Bmargin-bottom%3A8px%22%3E%3Clabel%20style%3D%22flex%3A1%22%3E%EC%8B%9C%EC%9E%91%3Cinput%20id%3D%22kta-f%22%20type%3D%22date%22%20style%3D%22&#x27;%2Bd%2B&#x27;%22%3E%3C%2Flabel%3E%3Clabel%20style%3D%22flex%3A1%22%3E%EB%81%9D%3Cinput%20id%3D%22kta-t%22%20type%3D%22date%22%20style%3D%22&#x27;%2Bd%2B&#x27;%22%3E%3C%2Flabel%3E%3C%2Fdiv%3E%3Clabel%20style%3D%22display%3Aflex%3Balign-items%3Acenter%3Bgap%3A6px%3Bmargin-bottom%3A12px%22%3E%3Cinput%20id%3D%22kta-kt%22%20type%3D%22checkbox%22%20checked%3E%20KT%EB%A7%8C%20%EB%B0%9B%EA%B8%B0%20(%EA%B6%8C%EC%9E%A5)%3C%2Flabel%3E%3Cbutton%20id%3D%22kta-go%22%20style%3D%22width%3A100%25%3Bheight%3A36px%3Bborder%3A0%3Bborder-radius%3A8px%3Bbackground%3A%23E1362B%3Bcolor%3A%23fff%3Bfont-weight%3A700%3Bfont-size%3A13px%3Bcursor%3Apointer%22%3E%EA%B2%80%EC%88%98%ED%88%B4%EB%A1%9C%20%EB%B3%B4%EB%82%B4%EA%B8%B0%3C%2Fbutton%3E%3Cdiv%20id%3D%22kta-st%22%20style%3D%22margin-top%3A10px%3Bfont-size%3A12px%3Bcolor%3A%23555%3Bmin-height%3A18px%3Bwhite-space%3Apre-wrap%22%3E%3C%2Fdiv%3E&#x27;%2Cdocument.body.appendChild(s)%3Bconst%20l%3Dt%3D%3Es.querySelector(%22%23%22%2Bt)%3Bl(%22kta-f%22).value%3Do(r)%2Cl(%22kta-t%22).value%3Do(n)%3Bconst%20c%3D(t%2Ce)%3D%3E%7Bconst%20o%3Dl(%22kta-st%22)%3Bo.textContent%3Dt%2Co.style.color%3De%3F%22%23E1362B%22%3A%22%23555%22%7D%3Blet%20p%3D!1%3Bl(%22kta-x%22).onclick%3D()%3D%3E%7Bp%7C%7Cs.remove()%7D%2Cl(%22kta-go%22).onclick%3Dasync()%3D%3E%7Bif(p)return%3Bconst%20e%3Dl(%22kta-dc%22).value%2Co%3Dl(%22kta-f%22).value%2Ca%3Dl(%22kta-t%22).value%2Ci%3Dl(%22kta-kt%22).checked%3Bif(!o%7C%7C!a%7C%7Co%3Ea)return%20void%20c(%22%EA%B8%B0%EA%B0%84%EC%9D%84%20%ED%99%95%EC%9D%B8%ED%95%B4%20%EC%A3%BC%EC%84%B8%EC%9A%94.%22%2C!0)%3Bconst%20r%3Dwindow.open(%22https%3A%2F%2Fwoori-001.github.io%2Fktaudit%2F%22%2C%22ktaudit%22)%3Bif(!r)return%20void%20c(%22%ED%8C%9D%EC%97%85%EC%9D%B4%20%EC%B0%A8%EB%8B%A8%EB%90%90%EC%96%B4%EC%9A%94.%20%EC%A3%BC%EC%86%8C%EC%B0%BD%20%EC%98%A4%EB%A5%B8%EC%AA%BD%EC%97%90%EC%84%9C%20workline.kr%20%ED%8C%9D%EC%97%85%EC%9D%84%20%ED%97%88%EC%9A%A9%ED%95%9C%20%EB%92%A4%20%EB%8B%A4%EC%8B%9C%20%EB%88%8C%EB%9F%AC%EC%A3%BC%EC%84%B8%EC%9A%94.%22%2C!0)%3Bp%3D!0%2Cl(%22kta-go%22).disabled%3D!0%2Cl(%22kta-go%22).style.opacity%3D%22.6%22%3Bconst%20n%3Dl(%22kta-dc%22).selectedOptions%5B0%5D.textContent%2B%22%20%22%2Bo%2B%22~%22%2Ba%2B(i%3F%22%20(KT)%22%3A%22%22)%3Blet%20d%3D!1%2Cu%3D!1%3Bconst%20w%3De%3D%3E%7Be.origin%3D%3D%3Dt%26%26e.data%26%26(%22ktaudit-ready%22%3D%3D%3De.data.type%26%26(d%3D!0)%2C%22ktaudit-ack%22%3D%3D%3De.data.type%26%26(u%3D!0))%7D%3Bwindow.addEventListener(%22message%22%2Cw)%3Bconst%20b%3Dt%3D%3Enew%20Promise((e%3D%3EsetTimeout(e%2Ct)))%3Btry%7Bconst%20l%3Dnew%20URLSearchParams(%7BdateChk%3Ae%2CdateFrom%3Ao%2CdateTo%3Aa%7D)%3Bi%26%26l.set(%22articleIdx1%22%2C%22724%22)%2Cc(%22%ED%8C%8C%EC%9D%BC%20%EC%83%9D%EC%84%B1%20%EC%9A%94%EC%B2%AD%20%EC%A4%91%E2%80%A6%22)%3Bconst%20p%3Dawait%20fetch(%22%2Fapi%2Fexact%2Fcalc%2Fexport%3F%22%2Bl%2C%7Bcredentials%3A%22include%22%7D)%3Bif(!p.ok)%7Blet%20t%3D%22HTTP%20%22%2Bp.status%3Bif(413%3D%3D%3Dp.status)t%3D%22%EC%A1%B0%ED%9A%8C%20%EA%B1%B4%EC%88%98%EA%B0%80%20%EB%84%88%EB%AC%B4%20%EB%A7%8E%EC%95%84%EC%9A%94.%20%EA%B8%B0%EA%B0%84%EC%9D%84%20%EC%A4%84%EC%97%AC%20%EC%A3%BC%EC%84%B8%EC%9A%94.%22%3Belse%20if(401%3D%3D%3Dp.status%7C%7C403%3D%3D%3Dp.status)t%3D%22%EC%9B%8C%ED%81%AC%EB%9D%BC%EC%9D%B8%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%EC%9D%B4%20%ED%95%84%EC%9A%94%ED%95%B4%EC%9A%94.%22%3Belse%20try%7Bconst%20e%3Dawait%20p.json()%3Be%26%26e.error%26%26(t%3De.error)%7Dcatch(t)%7B%7Dthrow%20new%20Error(t)%7Dlet%20w%3D(await%20p.json()).job%3Bif(!w%7C%7C!w.jobId)throw%20new%20Error(%22%EC%9B%8C%ED%81%AC%EB%9D%BC%EC%9D%B8%EC%9D%B4%20%EC%9E%91%EC%97%85%20%EB%B2%88%ED%98%B8%EB%A5%BC%20%EC%A3%BC%EC%A7%80%20%EC%95%8A%EC%95%98%EC%96%B4%EC%9A%94.%22)%3Bconst%20f%3DDate.now()%3Bfor(%3B%22done%22!%3D%3Dw.status%3B)%7Bif(%22error%22%3D%3D%3Dw.status%7C%7C%22failed%22%3D%3D%3Dw.status%7C%7C%22canceled%22%3D%3D%3Dw.status)throw%20new%20Error(w.error%7C%7C%22%ED%8C%8C%EC%9D%BC%20%EC%83%9D%EC%84%B1%20%EC%8B%A4%ED%8C%A8%22)%3Bif(Date.now()-f%3E6e5)throw%20new%20Error(%2210%EB%B6%84%EC%9D%B4%20%EC%A7%80%EB%82%98%EB%8F%84%20%ED%8C%8C%EC%9D%BC%EC%9D%B4%20%EC%99%84%EC%84%B1%EB%90%98%EC%A7%80%20%EC%95%8A%EC%95%98%EC%96%B4%EC%9A%94.%22)%3Bc(%22%ED%8C%8C%EC%9D%BC%20%EC%83%9D%EC%84%B1%20%EC%A4%91%E2%80%A6%20%22%2B(w.queueAhead%3F%22%EB%8C%80%EA%B8%B0%20%22%2Bw.queueAhead%2B%22%EA%B1%B4%20%C2%B7%20%22%3A%22%22)%2B(w.doneRows%7C%7C0).toLocaleString()%2B%22%20%2F%20%22%2B(w.rowCount%7C%7C0).toLocaleString()%2B%22%ED%96%89%22)%2Cawait%20b(1e3)%3Bconst%20t%3Dawait%20fetch(%22%2Fapi%2Forders%2Fexport-jobs%2F%22%2Bw.jobId%2C%7Bcredentials%3A%22include%22%7D)%3Bt.ok%26%26(w%3D(await%20t.json()).job%7C%7Cw)%7Dc(%22%ED%8C%8C%EC%9D%BC%20%EB%B0%9B%EB%8A%94%20%EC%A4%91%E2%80%A6%20(%22%2B(w.rowCount%7C%7C0).toLocaleString()%2B%22%ED%96%89)%22)%3Bconst%20x%3Dawait%20fetch(%22%2Fapi%2Forders%2Fexport-jobs%2F%22%2Bw.jobId%2B%22%2Fdownload%22%2C%7Bcredentials%3A%22include%22%7D)%3Bif(!x.ok)throw%20new%20Error(%22%ED%8C%8C%EC%9D%BC%EC%9D%84%20%EB%B0%9B%EC%A7%80%20%EB%AA%BB%ED%96%88%EC%96%B4%EC%9A%94%20(HTTP%20%22%2Bx.status%2B%22)%22)%3Bconst%20k%3Dawait%20x.arrayBuffer()%2Cg%3D%7Btype%3A%22ktaudit-file%22%2Cid%3A%22wl-%22%2Bw.jobId%2Cname%3Aw.fileName%7C%7C%22%EC%A0%84%EC%B2%B4%EC%A0%95%EC%82%B0%EA%B4%80%EB%A6%AC.xlsx%22%2Clabel%3An%2Cbuf%3Ak%7D%3Bc(%22%EA%B2%80%EC%88%98%ED%88%B4%EB%A1%9C%20%EB%B3%B4%EB%82%B4%EB%8A%94%20%EC%A4%91%E2%80%A6%22)%3Bconst%20h%3DDate.now()%3Bfor(%3B!u%3B)%7Bif(r.closed)throw%20new%20Error(%22%EA%B2%80%EC%88%98%ED%88%B4%20%EC%B0%BD%EC%9D%B4%20%EB%8B%AB%ED%98%94%EC%96%B4%EC%9A%94.%20%EB%8B%A4%EC%8B%9C%20%EB%88%8C%EB%9F%AC%EC%A3%BC%EC%84%B8%EC%9A%94.%22)%3Bif(Date.now()-h%3E6e4)throw%20new%20Error(%22%EA%B2%80%EC%88%98%ED%88%B4%20%EC%B0%BD%EC%9D%B4%20%EC%9D%91%EB%8B%B5%ED%95%98%EC%A7%80%20%EC%95%8A%EC%95%84%EC%9A%94.%20%EA%B2%80%EC%88%98%ED%88%B4%20%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A5%BC%20%EC%83%88%EB%A1%9C%20%EA%B3%A0%EC%B9%9C%20%EB%92%A4%20%EB%8B%A4%EC%8B%9C%20%EB%88%8C%EB%9F%AC%EC%A3%BC%EC%84%B8%EC%9A%94.%22)%3B(d%7C%7CDate.now()-h%3E3e3)%26%26r.postMessage(g%2Ct)%2Cawait%20b(700)%7Dc(%22%E2%9C%93%20%22%2B(w.rowCount%7C%7C0).toLocaleString()%2B%22%ED%96%89%EC%9D%84%20%EA%B2%80%EC%88%98%ED%88%B4%EB%A1%9C%20%EB%B3%B4%EB%83%88%EC%96%B4%EC%9A%94.%22)%3Btry%7Br.focus()%7Dcatch(t)%7B%7DsetTimeout((()%3D%3Es.remove())%2C2500)%7Dcatch(t)%7Bc(%22%E2%9A%A0%20%22%2B(t.message%7C%7Ct)%2C!0)%7Dfinally%7Bwindow.removeEventListener(%22message%22%2Cw)%2Cp%3D!1%2Cl(%22kta-go%22).disabled%3D!1%2Cl(%22kta-go%22).style.opacity%3D%221%22%7D%7D%7D)()%3B" onclick="alert('이 버튼은 클릭이 아니라 북마크바로 끌어다 놓는 버튼이에요.');return false;">KT검수로 보내기</a><br>
+        <span class="hint">드래그가 안 되면: 아무 페이지나 북마크로 추가한 뒤 이름을 “KT검수로 보내기”, 주소(URL)를 아래 코드로 바꿔 저장하세요.</span><br>
+        <button class="copy" id="cp">북마크 주소(코드) 복사</button> <span class="hint" id="cpok"></span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>2. 사용</h2>
+    <ol>
+      <li><a href="https://workline.kr/" target="_blank" rel="noopener">워크라인</a>에 로그인합니다. (어느 화면이든 상관없어요)</li>
+      <li>북마크바의 <b>KT검수로 보내기</b>를 누르면 오른쪽 위에 작은 창이 뜹니다.</li>
+      <li>조회 기준(기본 개통일)과 기간(기본 지난주 월~일)을 확인하고 <b>검수툴로 보내기</b>를 누릅니다.</li>
+      <li>검수툴 창이 열리고, 파일이 만들어지면 자동으로 검수가 시작됩니다.</li>
+    </ol>
+    <p class="hint" style="margin:10px 0 0">처음 한 번은 브라우저가 workline.kr의 팝업을 막을 수 있어요. 주소창 오른쪽의 팝업 차단 아이콘에서 “항상 허용”을 고른 뒤 다시 누르세요.</p>
+  </div>
+
+  <div class="card">
+    <h2>참고</h2>
+    <ul class="notes">
+      <li>워크라인의 “엑셀저장” 버튼과 같은 기능을 그대로 사용합니다. 그래서 워크라인 내보내기 기록에 “전체정산관리 엑셀”로 남고, 그 파일은 받아간 상태로 표시됩니다.</li>
+      <li>데이터는 내 PC의 브라우저 안에서 워크라인 → 검수툴 창으로만 옮겨지고, 다른 서버로 보내지지 않습니다. (공용 서버에는 고객 키의 해시와 완료 표시만 저장됩니다.)</li>
+      <li>“KT만 받기”를 끄면 전 통신사 파일을 받습니다. 검수툴은 어차피 <code>KT_</code> 상품만 검수합니다.</li>
+      <li>기간이 너무 길어 워크라인이 거절하면 기간을 나눠서 받으세요.</li>
+    </ul>
+  </div>
+</div>
+<script>
+document.getElementById('cp').onclick=async()=>{const t=document.getElementById('bm').getAttribute('href');try{await navigator.clipboard.writeText(t);document.getElementById('cpok').textContent='복사됨';}catch(e){prompt('아래 코드를 복사하세요',t);}};
+</script>
+</body>
+</html>
