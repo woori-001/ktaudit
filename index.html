@@ -177,7 +177,7 @@ tr.gitem td{padding:9px 12px;vertical-align:middle;}
 .dot-COUPON{background:#C2410C;} .dot-LOGISTICS{background:#15803D;} .dot-DEPOSIT{background:#A16207;}
 .dot-DOCFEE{background:#9333EA;} .dot-NOCONTRACT{background:#0891B2;} .dot-BUDDY{background:#DB2777;}
 .dot-ACTMISS{background:#EA580C;} .dot-MAINTV{background:#4F46E5;}
-.dot-PHONEFEE{background:#65A30D;} .dot-HARVTV{background:#7E22CE;} .dot-SETTLED{background:#B91C1C;} .dot-SETSTALE{background:#0D9488;}
+.dot-PHONEFEE{background:#65A30D;} .dot-HARVTV{background:#7E22CE;} .dot-SETTLED{background:#B91C1C;} .dot-SETSTALE{background:#0D9488;} .dot-BUNDLECAP{background:#BE185D;}
 .gi-errs-sep{color:var(--line2);margin:0 4px;font-weight:400;}
 
 /* ══ 상세 패널 (검수) ══ */
@@ -519,15 +519,18 @@ const CODE_LABEL={TAB:'상품탭 불일치',DLCALC:'개통기한 계산오류',D
   COUPON:'쿠폰 차감 불일치',LOGISTICS:'가전/물류 불일치',DEPOSIT:'수납 누락',
   DOCFEE:'따가결 차감 오류',NOCONTRACT:'무약정 수수료',BUDDY:'버디 속도 불일치',
   ACTMISS:'개통 누락',MAINTV:'추단 탭 누락',
-  PHONEFEE:'전화 수수료 오류',HARVTV:'하브 TV 금액 누락',SETSTALE:'셋트유형 미수정'};
+  PHONEFEE:'전화 수수료 오류',HARVTV:'하브 TV 금액 누락',SETSTALE:'셋트유형 미수정',
+  BUNDLECAP:'법인/패밀리 번들 20만↑'};
 const PHONE_FEE=4545;
+// BUNDLECAP: 2026-11-03 접수건부터 법인·패밀리 고객은 번들수수료 20만원 이상이면 확인 필요
+const BUNDLECAP_FROM=new Date(2026,10,3),BUNDLECAP_MIN=200000;
 const CODE_CLASS={TAB:'ec-TAB',DLCALC:'ec-DLCALC',DLOVER:'ec-DLOVER',TOPSTORE:'ec-TOPSTORE',
   PARTNER:'ec-PARTNER',HARVFEE:'ec-HARVFEE',BASEFEE:'ec-BASEFEE',
   SETTYPE:'ec-SETTYPE',APPLYDIFF:'ec-APPLYDIFF',GENIE3:'ec-GENIE3',HARVLABEL:'ec-HARVLABEL',
   COUPON:'ec-COUPON',LOGISTICS:'ec-LOGISTICS',DEPOSIT:'ec-DEPOSIT',
   DOCFEE:'ec-DOCFEE',NOCONTRACT:'ec-NOCONTRACT',BUDDY:'ec-BUDDY',
   ACTMISS:'ec-ACTMISS',MAINTV:'ec-MAINTV',
-  PHONEFEE:'ec-PHONEFEE',HARVTV:'ec-HARVTV',SETSTALE:'ec-SETSTALE'};
+  PHONEFEE:'ec-PHONEFEE',HARVTV:'ec-HARVTV',SETSTALE:'ec-SETSTALE',BUNDLECAP:'ec-BUNDLECAP'};
 
 // ══ 헬퍼 ══
 function H(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -640,6 +643,8 @@ async function parseKTFile(file){
       deposit:v(row,map,'수납'),
       settledDate:v(row,map,'정산완료일'),
       status:v(row,map,'개통상태'),
+      bundleFee:v(row,map,'번들수수료'),
+      custType:v(row,map,'고객구분'),
     });
   });
   rows.meta=meta;
@@ -1009,6 +1014,30 @@ function inspect(c){
     // (정산완료일 검사는 v11에서 정산대사 탭 ② 정산예정 파일 쪽으로 이동 — 문서 정산예정 B21이 그 파일 기준이고,
     //  월 단위 개통일 다운로드본에는 이미 정산된 주차가 당연히 섞여 있어 검수 탭에서는 대량 오탐이 남)
   });
+
+  // ── 법인/패밀리 번들수수료 상한 (v13, 사용자 요청 2026-11-03) ──
+  // 2026-11-03 이후 접수된 행 중 번들수수료 ≥ 200,000원인 행이 있고, 그 고객이 법인 또는 패밀리이면 오류
+  //  · 법인  : 고객구분 = '법인사업자' (워크라인 신규 컬럼) 또는 속성에 '법인'
+  //  · 패밀리: 상품옵션 또는 속성에 '패밀리' (보통 인터넷 옵션 '패밀리베이직(500M)' 등)
+  //  번들수수료는 TV 행에 붙고 패밀리 표기는 인터넷 행에 있으므로 고객 단위로 판정
+  {
+    const recent=R.filter(r=>r.applyDate&&r.applyDate>=BUNDLECAP_FROM);
+    if(recent.length){
+      const corpRow=R.find(r=>String(r.custType||'').includes('법인')||String(r.attr||'').includes('법인'));
+      const famRow=R.find(r=>String(r.option||'').includes('패밀리')||String(r.attr||'').includes('패밀리'));
+      if(corpRow||famRow){
+        mark('BUNDLECAP');
+        const why=[];
+        if(corpRow)why.push('법인('+(String(corpRow.custType||'').includes('법인')?'고객구분 '+corpRow.custType:'속성 '+corpRow.attr)+')');
+        if(famRow)why.push('패밀리('+(String(famRow.option||'').includes('패밀리')?'상품옵션 '+famRow.option:'속성 '+famRow.attr)+')');
+        recent.filter(r=>num(r.bundleFee)>=BUNDLECAP_MIN).forEach(r=>{
+          add('BUNDLECAP',[['상품명',r.product],['상품옵션',r.option],['접수일',fmtDate(r.applyDate)],
+            ['번들수수료',num(r.bundleFee).toLocaleString()+'원'],['구분',why.join(' · ')],
+            ['사유','11/3 접수건부터 법인·패밀리는 번들수수료 20만원 이상 확인 필요']],r._rid);
+        });
+      }
+    }
+  }
 
   return{...c,errs,checked:[...checked],verdict:errs.length?'check':'ok'};
 }
