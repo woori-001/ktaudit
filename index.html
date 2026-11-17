@@ -729,26 +729,34 @@ function inspect(c){
       add('SETTYPE',[['셋트유형',st],['상품옵션',opt],['사유','단독인데 결합형 TV옵션으로 되어있음']],r._rid);
   });
 
-  // 셋탑(할인탭) 차감액 검증: 지니3/지니4/사운드바 ↔ -27,273원 매칭. 자점(자체영업팀)은 검수대상 제외, 협력점/판매점만 대상
+  // 셋탑(할인탭) 차감액 검증 (v14, 2026-11-17 KT 셋탑 변경 반영). 자점(자체영업팀)은 검수대상 제외, 협력점/판매점만 대상
+  //  · 지니A2(단독형·케어형): -36,364원만 정상
+  //  · 지니2A              : 수수료 0원 셋탑 → 0원만 정상
+  //  · 지니4 / 사운드바     : -27,273원만 정상
+  //    (위 셋은 0원도 오류 — 사용자 확정. 개통 전이라 금액이 아직 안 들어간 건도 잡힘)
+  //  · 지니3셋탑           : 예전 규칙 유지 — 0 또는 -27,273원, 고객의 TV 회선 중 과금 건이 하나도 없으면 오류
+  //  · 그 외(지니A셋탑·기타셋탑·없음 등): 0원만 정상
   {
     const tvRows=R.filter(r=>(r.product==='KT_TV'||r.product==='KT_TV(약정갱신)')&&getPartnerType(r.partner)!=='INTERNAL');
     if(tvRows.length){
       mark('GENIE3');
-      const isStbBox=name=>{name=String(name||'');return name.includes('지니3')||name.includes('지니4')||name.includes('사운드바');};
       tvRows.forEach(r=>{
         const amt=num(r.stbDeduct);
-        if(amt!==0&&amt!==-27273)
-          add('GENIE3',[['셋탑',r.discountTab||'-'],['차감액',amt.toLocaleString()+'원'],['사유','표준 차감액(0 또는 -27,273원) 외 금액']],r._rid);
+        const rule=stbRule(r.discountTab);
+        const won=n=>n.toLocaleString()+'원';
+        const row=reason=>add('GENIE3',[['셋탑',r.discountTab||'-'],['차감액',won(amt)],['사유',reason]],r._rid);
+        if(rule&&rule.allow){
+          if(!rule.allow.includes(amt))row(rule.label+' 셋탑은 '+rule.allow.map(won).join(' 또는 ')+'이 정상');
+        }else if(rule&&rule.legacy){
+          if(amt!==0&&amt!==-27273)row('표준 차감액(0 또는 -27,273원) 외 금액');
+        }else if(amt!==0){
+          row(amt===-27273||amt===-36364?'지정 셋탑(지니A2·지니4·사운드바·지니3)이 아닌데 '+won(amt)+'이 차감됨':'셋탑이 아닌데 차감액이 있음');
+        }
       });
-      tvRows.forEach(r=>{
-        const amt=num(r.stbDeduct);
-        if(!isStbBox(r.discountTab)&&amt===-27273)
-          add('GENIE3',[['셋탑',r.discountTab||'-'],['차감액',amt.toLocaleString()+'원'],['사유','지니3/지니4/사운드바가 아닌데 -27,273원이 차감됨']],r._rid);
-      });
-      const stbRows=tvRows.filter(r=>isStbBox(r.discountTab));
+      const legacyRows=tvRows.filter(r=>{const x=stbRule(r.discountTab);return x&&x.legacy;});
       const anyCharged=tvRows.some(r=>num(r.stbDeduct)!==0);
-      if(stbRows.length&&!anyCharged)
-        stbRows.forEach(r=>add('GENIE3',[['셋탑',r.discountTab],['차감액','0원'],['사유','셋탑인데 회선 중 과금된 건이 하나도 없음']],r._rid));
+      if(legacyRows.length&&!anyCharged)
+        legacyRows.forEach(r=>add('GENIE3',[['셋탑',r.discountTab],['차감액','0원'],['사유','지니3 셋탑인데 회선 중 과금된 건이 하나도 없음']],r._rid));
     }
   }
 
@@ -1151,6 +1159,14 @@ function svcList(g){
   g.rows.slice().sort((a,b)=>rank(a)-rank(b)).forEach(r=>{const v=cleanSvc(r.serviceNo);if(v&&!out.includes(v))out.push(v);});
   return(g._svc=out);
 }
+// 할인탭 셋탑명 → 차감액 규칙. 워크라인 표기 예: 지니A2_단독형, 지니A2_케어형, 지니2A, 지니4_릴리화이트, 사운드바_우드, 지니3셋탑
+const STB_RULES=[
+  {re:/지니a2/,label:'지니A2',allow:[-36364]},
+  {re:/지니2a/,label:'지니2A',allow:[0]},
+  {re:/지니4|사운드바/,label:'지니4/사운드바',allow:[-27273]},
+  {re:/지니3/,label:'지니3',legacy:true},
+];
+function stbRule(name){const n=String(name||'').replace(/\s+/g,'').toLowerCase();return STB_RULES.find(x=>x.re.test(n))||null;}
 function firstDate(rows,field){for(const r of rows){if(r[field])return r[field];}return null;}
 function getFiltered(){
   return Object.values(GROUPS).filter(g=>{
